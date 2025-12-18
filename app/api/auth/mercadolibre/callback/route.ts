@@ -14,6 +14,13 @@ export async function GET(request: NextRequest) {
   try {
     const tokenResponse = await exchangeCodeForToken(code);
 
+    console.log("=== OAuth Callback Debug ===");
+    console.log("Token received:", tokenResponse.access_token ? "YES" : "NO");
+    console.log("Token length:", tokenResponse.access_token?.length);
+    console.log("Expires in:", tokenResponse.expires_in);
+    console.log("User ID:", tokenResponse.user_id);
+    console.log("About to set cookies...");
+
     // Create redirect response to home page
     const redirectUrl = new URL("/", request.nextUrl.origin);
     redirectUrl.searchParams.set("success", "true");
@@ -44,6 +51,9 @@ export async function GET(request: NextRequest) {
       maxAge: tokenResponse.expires_in,
       path: "/",
     });
+
+    console.log("Cookies set successfully");
+    console.log("Redirecting to:", redirectUrl.toString());
 
     return response;
   } catch (error) {
