@@ -1,38 +1,55 @@
-'use server'
+"use server";
 
-import { cookies } from 'next/headers'
+import { cookies } from "next/headers";
 import {
   getItemDetails,
   getItemDescription,
   MLItemResponse,
   MLDescriptionResponse,
-} from '@/lib/mercadolibre'
-import getSupabaseClient from '@/lib/supabase'
-import { analyzePublication } from '@/lib/openai'
-import { MLListing, ListingDescription, AnalysisRecommendations } from '@/types'
+} from "@/lib/mercadolibre";
+import getSupabaseClient from "@/lib/supabase";
+import { analyzePublication } from "@/lib/openai";
+import {
+  MLListing,
+  ListingDescription,
+  AnalysisRecommendations,
+} from "@/types";
 
 interface AnalyzeListingResult {
-  listing: MLListing
-  description: ListingDescription
-  analysis: AnalysisRecommendations
+  listing: MLListing;
+  description: ListingDescription;
+  analysis: AnalysisRecommendations;
 }
 
-export async function analyzeListing(itemId: string): Promise<AnalyzeListingResult> {
+export async function analyzeListing(
+  itemId: string
+): Promise<AnalyzeListingResult> {
   try {
     // 1. Get access token from cookies
-    const cookieStore = await cookies()
-    const token = cookieStore.get('ml_access_token')?.value
+    const cookieStore = await cookies();
+    const token = cookieStore.get("ml_access_token")?.value;
+
+    console.log("=== Server Action Debug ===");
+    console.log("Token from cookies:", token ? "YES" : "NO");
+    console.log("Token length:", token?.length);
+    console.log(
+      "All cookies:",
+      cookieStore.getAll().map((c) => c.name)
+    );
 
     if (!token) {
-      throw new Error('Not authenticated with MercadoLibre')
+      throw new Error("Not authenticated with MercadoLibre");
     }
 
     // 2. Fetch data from MercadoLibre API
-    console.log(`Fetching item details for ${itemId}...`)
-    const itemData: MLItemResponse = await getItemDetails(itemId, token)
+    console.log(`Fetching item details for ${itemId}...`);
+    const itemData: MLItemResponse = await getItemDetails(itemId, token);
 
-    console.log(`Fetching description for ${itemId}...`)
-    const descData: MLDescriptionResponse = await getItemDescription(itemId, token)
+    console.log(`Fetching description for ${itemId}...`);
+    const descData: MLDescriptionResponse = await getItemDescription(
+      itemId,
+      token
+    );
 
     // 3. Transform to database format
     const listing: MLListing = {
@@ -44,20 +61,20 @@ export async function analyzeListing(itemId: string): Promise<AnalyzeListingResu
       sold_quantity: itemData.sold_quantity,
       category_id: itemData.category_id || null,
       permalink: itemData.permalink || null,
-    }
+    };
 
     const description: ListingDescription = {
       listing_id: itemId, // Will be updated with actual DB ID
-      plain_text: descData.plain_text || descData.text || '',
-    }
+      plain_text: descData.plain_text || descData.text || "",
+    };
 
     // 4. Save to Supabase
-    const supabase = getSupabaseClient()
+    const supabase = getSupabaseClient();
 
     // Upsert listing
-    console.log(`Saving listing to database...`)
+    console.log(`Saving listing to database...`);
     const { data: savedListing, error: listingError } = await supabase
-      .from('listings')
+      .from("listings")
       .upsert(
         {
           item_id: listing.item_id,
@@ -70,68 +87,65 @@ export async function analyzeListing(itemId: string): Promise<AnalyzeListingResu
           permalink: listing.permalink,
           updated_at: new Date().toISOString(),
         },
-        { onConflict: 'item_id' }
+        { onConflict: "item_id" }
       )
       .select()
-      .single()
+      .single();
 
     if (listingError) {
-      console.error('Error saving listing:', listingError)
-      throw new Error(`Failed to save listing: ${listingError.message}`)
+      console.error("Error saving listing:", listingError);
+      throw new Error(`Failed to save listing: ${listingError.message}`);
     }
 
-    const listingDbId = savedListing.id
+    const listingDbId = savedListing.id;
 
     // Insert description
-    console.log(`Saving description to database...`)
+    console.log(`Saving description to database...`);
     const { error: descError } = await supabase
-      .from('listing_descriptions')
+      .from("listing_descriptions")
       .insert({
         listing_id: listingDbId,
         plain_text: description.plain_text,
-      })
+      });
 
     if (descError) {
-      console.error('Error saving description:', descError)
-      throw new Error(`Failed to save description: ${descError.message}`)
+      console.error("Error saving description:", descError);
+      throw new Error(`Failed to save description: ${descError.message}`);
     }
 
     // Update description with actual listing ID
-    description.listing_id = listingDbId
+    description.listing_id = listingDbId;
 
     // 5. Analyze with AI
-    console.log(`Analyzing listing with AI...`)
-    const recommendations = await analyzePublication(listing, description)
+    console.log(`Analyzing listing with AI...`);
+    const recommendations = await analyzePublication(listing, description);
 
     // 6. Save analysis to database
-    console.log(`Saving AI analysis to database...`)
-    const { error: analysisError } = await supabase
-      .from('ai_analyses')
-      .insert({
-        listing_id: listingDbId,
-        recommendations: recommendations,
-      })
+    console.log(`Saving AI analysis to database...`);
+    const { error: analysisError } = await supabase.from("ai_analyses").insert({
+      listing_id: listingDbId,
+      recommendations: recommendations,
+    });
 
     if (analysisError) {
-      console.error('Error saving analysis:', analysisError)
-      throw new Error(`Failed to save analysis: ${analysisError.message}`)
+      console.error("Error saving analysis:", analysisError);
+      throw new Error(`Failed to save analysis: ${analysisError.message}`);
     }
 
-    console.log(`Analysis complete for ${itemId}`)
+    console.log(`Analysis complete for ${itemId}`);
 
     return {
       listing,
       description,
       analysis: recommendations,
-    }
+    };
   } catch (error) {
-    console.error('Error in analyzeListing:', error)
+    console.error("Error in analyzeListing:", error);
 
     if (error instanceof Error) {
-      throw new Error(`Listing analysis failed: ${error.message}`)
+      throw new Error(`Listing analysis failed: ${error.message}`);
     }
 
-    throw new Error('Listing analysis failed: Unknown error')
+    throw new Error("Listing analysis failed: Unknown error");
   }
 }
-
