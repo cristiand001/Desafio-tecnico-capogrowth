@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getAuthURL } from '@/lib/mercadolibre'
 import { analyzeListing } from '@/app/actions/listings'
@@ -12,7 +12,23 @@ interface AnalysisResult {
   analysis: AnalysisRecommendations
 }
 
-export default function Home() {
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-800 mb-6">
+          <svg className="animate-spin h-8 w-8 text-amber-400" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+          </svg>
+        </div>
+        <p className="text-slate-400">Loading...</p>
+      </div>
+    </div>
+  )
+}
+
+function PageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -376,5 +392,13 @@ export default function Home() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <PageContent />
+    </Suspense>
   )
 }
