@@ -21,7 +21,7 @@ export async function analyzePublication(
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4-turbo-preview",
+      model: "gpt-4o-mini",
       response_format: { type: "json_object" },
       messages: [
         {
