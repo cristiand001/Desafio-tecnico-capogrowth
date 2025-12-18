@@ -1,9 +1,9 @@
-'use server';
+"use server";
 
-import axios from 'axios';
+import axios from "axios";
 
-const ML_API_BASE_URL = 'https://api.mercadolibre.com';
-const ML_AUTH_URL = 'https://auth.mercadolibre.com.ar/authorization';
+const ML_API_BASE_URL = "https://api.mercadolibre.com";
+const ML_AUTH_URL = "https://auth.mercadolibre.com.ar/authorization";
 
 // Token response from MercadoLibre OAuth
 export interface MLTokenResponse {
@@ -50,12 +50,12 @@ function getEnvVar(name: string): string {
 /**
  * Generates the MercadoLibre OAuth authorization URL.
  */
-export function getAuthURL(): string {
-  const clientId = getEnvVar('ML_CLIENT_ID');
-  const redirectUri = getEnvVar('ML_REDIRECT_URI');
+export async function getAuthURL(): Promise<string> {
+  const clientId = getEnvVar("ML_CLIENT_ID");
+  const redirectUri = getEnvVar("ML_REDIRECT_URI");
 
   const params = new URLSearchParams({
-    response_type: 'code',
+    response_type: "code",
     client_id: clientId,
     redirect_uri: redirectUri,
   });
@@ -66,16 +66,18 @@ export function getAuthURL(): string {
 /**
  * Exchanges an authorization code for an access token.
  */
-export async function exchangeCodeForToken(code: string): Promise<MLTokenResponse> {
-  const clientId = getEnvVar('ML_CLIENT_ID');
-  const clientSecret = getEnvVar('ML_CLIENT_SECRET');
-  const redirectUri = getEnvVar('ML_REDIRECT_URI');
+export async function exchangeCodeForToken(
+  code: string
+): Promise<MLTokenResponse> {
+  const clientId = getEnvVar("ML_CLIENT_ID");
+  const clientSecret = getEnvVar("ML_CLIENT_SECRET");
+  const redirectUri = getEnvVar("ML_REDIRECT_URI");
 
   try {
     const response = await axios.post<MLTokenResponse>(
       `${ML_API_BASE_URL}/oauth/token`,
       {
-        grant_type: 'authorization_code',
+        grant_type: "authorization_code",
         client_id: clientId,
         client_secret: clientSecret,
         code: code,
@@ -83,8 +85,8 @@ export async function exchangeCodeForToken(code: string): Promise<MLTokenRespons
       },
       {
         headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
       }
     );
@@ -93,7 +95,9 @@ export async function exchangeCodeForToken(code: string): Promise<MLTokenRespons
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
-        `Failed to exchange code for token: ${error.response?.data?.message || error.message}`
+        `Failed to exchange code for token: ${
+          error.response?.data?.message || error.message
+        }`
       );
     }
     throw error;
@@ -113,7 +117,7 @@ export async function getItemDetails(
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          Accept: 'application/json',
+          Accept: "application/json",
         },
       }
     );
@@ -122,7 +126,9 @@ export async function getItemDetails(
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
-        `Failed to fetch item ${itemId}: ${error.response?.data?.message || error.message}`
+        `Failed to fetch item ${itemId}: ${
+          error.response?.data?.message || error.message
+        }`
       );
     }
     throw error;
@@ -142,7 +148,7 @@ export async function getItemDescription(
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          Accept: 'application/json',
+          Accept: "application/json",
         },
       }
     );
@@ -151,7 +157,9 @@ export async function getItemDescription(
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
-        `Failed to fetch description for item ${itemId}: ${error.response?.data?.message || error.message}`
+        `Failed to fetch description for item ${itemId}: ${
+          error.response?.data?.message || error.message
+        }`
       );
     }
     throw error;
