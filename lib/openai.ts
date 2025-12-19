@@ -1,6 +1,6 @@
 "use server";
 
-import OpenAI from "openai";
+import Groq from "groq-sdk";
 import {
   MLListing,
   ListingDescription,
@@ -11,17 +11,17 @@ export async function analyzePublication(
   listing: MLListing,
   description: ListingDescription
 ): Promise<AnalysisRecommendations> {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
 
   if (!apiKey) {
-    throw new Error("OPENAI_API_KEY environment variable is not configured");
+    throw new Error("GROQ_API_KEY environment variable is not configured");
   }
 
-  const openai = new OpenAI({ apiKey });
+  const groq = new Groq({ apiKey });
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.1-70b-versatile",
       response_format: { type: "json_object" },
       messages: [
         {
@@ -51,7 +51,7 @@ Provide recommendations in JSON format.`,
     const content = completion.choices[0].message.content;
 
     if (!content) {
-      throw new Error("OpenAI returned an empty response");
+      throw new Error("Groq returned an empty response");
     }
 
     try {
@@ -59,7 +59,7 @@ Provide recommendations in JSON format.`,
       return recommendations;
     } catch (parseError) {
       throw new Error(
-        `Failed to parse OpenAI response as JSON: ${
+        `Failed to parse Groq response as JSON: ${
           parseError instanceof Error
             ? parseError.message
             : "Unknown parsing error"
@@ -67,8 +67,8 @@ Provide recommendations in JSON format.`,
       );
     }
   } catch (error) {
-    if (error instanceof OpenAI.APIError) {
-      throw new Error(`OpenAI API error: ${error.message}`);
+    if (error instanceof Groq.APIError) {
+      throw new Error(`Groq API error: ${error.message}`);
     }
     throw error;
   }
