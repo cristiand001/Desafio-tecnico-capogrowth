@@ -21,7 +21,7 @@ export async function analyzePublication(
 
   try {
     const completion = await groq.chat.completions.create({
-      model: "llama-3.1-70b-versatile",
+      model: "llama-3.3-70b-versatile",
       response_format: { type: "json_object" },
       messages: [
         {
