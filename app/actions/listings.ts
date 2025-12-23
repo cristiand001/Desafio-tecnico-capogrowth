@@ -44,13 +44,9 @@ export async function analyzeListing(
     const cookieStore = await cookies();
     const token = cookieStore.get("ml_access_token")?.value;
 
-    console.log("=== Server Action Debug ===");
-    console.log("Token from cookies:", token ? "YES" : "NO");
-    console.log("Token length:", token?.length);
-    console.log(
-      "All cookies:",
-      cookieStore.getAll().map((c) => c.name)
-    );
+    console.log("=== Analyzing Listing ===");
+    console.log("Item ID:", itemId);
+    console.log("Has token:", !!token);
 
     if (!token) {
       throw new Error("Not authenticated with MercadoLibre");
@@ -59,11 +55,16 @@ export async function analyzeListing(
     // 2. Fetch data from MercadoLibre API
     console.log(`Fetching item details for ${itemId}...`);
     const itemData: MLItemResponse = await getItemDetails(itemId, token);
+    console.log("Item data received:", itemData.id, itemData.title);
 
     console.log(`Fetching description for ${itemId}...`);
     const descData: MLDescriptionResponse = await getItemDescription(
       itemId,
       token
+    );
+    console.log(
+      "Description received, length:",
+      descData.plain_text?.length || 0
     );
 
     // 3. Transform to database format
@@ -179,34 +180,52 @@ export async function fetchUserListings(): Promise<UserListing[]> {
       throw new Error("User ID not found");
     }
 
-    const response = await getUserListings(userId, token, 0, 50);
+    // 1. Get list of item IDs
+    const searchResponse = await getUserListings(userId, token, 0, 50);
 
-    // DEBUG: Ver qué trae la API
-    console.log(
-      "MercadoLibre API Response:",
-      JSON.stringify(response.results[0], null, 2)
+    // 2. Fetch full details for each item (with price)
+    const listingsWithDetails = await Promise.all(
+      searchResponse.results.map(async (item) => {
+        try {
+          // Fetch full item details to get the real price
+          const fullItem = await getItemDetails(item.id, token);
+
+          return {
+            id: fullItem.id,
+            title: fullItem.title,
+            price: fullItem.price, // Real price from full details
+            currency_id: fullItem.currency_id,
+            status: fullItem.status,
+            available_quantity: fullItem.available_quantity,
+            sold_quantity: fullItem.sold_quantity,
+            category_id: fullItem.category_id,
+            permalink: fullItem.permalink,
+            thumbnail: fullItem.thumbnail,
+            condition: item.condition,
+          };
+        } catch (error) {
+          console.error(`Error fetching details for ${item.id}:`, error);
+          // Return item with data from search (may have price 0)
+          return {
+            id: item.id,
+            title: item.title,
+            price: item.price || 0,
+            currency_id: item.currency_id || "ARS",
+            status: item.status,
+            available_quantity: item.available_quantity || 0,
+            sold_quantity: item.sold_quantity || 0,
+            category_id: item.category_id,
+            permalink: item.permalink,
+            thumbnail: item.thumbnail,
+            condition: item.condition,
+          };
+        }
+      })
     );
 
-    return response.results.map((item) => {
-      // DEBUG: Ver cada item
-      console.log(
-        `Item ${item.id}: price=${item.price}, currency=${item.currency_id}`
-      );
+    console.log("Listings with full details:", listingsWithDetails);
 
-      return {
-        id: item.id,
-        title: item.title,
-        price: item.price || 0, // Default 0 si no hay precio
-        currency_id: item.currency_id || "ARS",
-        status: item.status,
-        available_quantity: item.available_quantity || 0,
-        sold_quantity: item.sold_quantity || 0,
-        category_id: item.category_id,
-        permalink: item.permalink,
-        thumbnail: item.thumbnail,
-        condition: item.condition,
-      };
-    });
+    return listingsWithDetails;
   } catch (error) {
     console.error("Error fetching user listings:", error);
     if (error instanceof Error) {

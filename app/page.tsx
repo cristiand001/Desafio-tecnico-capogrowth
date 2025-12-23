@@ -73,14 +73,25 @@ function PageContent() {
       return;
     }
 
+    // Validar formato MLA
+    if (!itemId.match(/^MLA\d+$/i)) {
+      setError(
+        "El código debe tener formato MLA seguido de números (ej: MLA123456789)"
+      );
+      return;
+    }
+
     setError("");
     setLoading(true);
     setResult(null);
 
     try {
+      console.log("Analyzing item:", itemId.trim());
       const analysisResult = await analyzeListing(itemId.trim());
+      console.log("Analysis result:", analysisResult);
       setResult(analysisResult);
     } catch (err) {
+      console.error("Analysis error:", err);
       setError(err instanceof Error ? err.message : "Analysis failed");
     } finally {
       setLoading(false);
@@ -150,7 +161,6 @@ function PageContent() {
     );
   }
 
-  // Authenticated view
   // Authenticated view
   return (
     <div className="min-h-screen bg-background p-4 relative overflow-auto">
