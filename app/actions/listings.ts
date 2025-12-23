@@ -187,51 +187,43 @@ export async function fetchUserListings(): Promise<UserListing[]> {
     // 2. Fetch full details for each item (with price)
     const listingsWithDetails = await Promise.all(
       searchResponse.results.map(async (item) => {
-        try {
-          // Fetch full item details to get the real price
-          const fullItem = await getItemDetails(item.id, token);
+        // 1. Datos base: Lo que ya tenemos de la búsqueda inicial
+        const base = {
+          id: item.id,
+          title: item.title,
+          price: item.price || 0,
+          currency_id: item.currency_id || "ARS",
+          status: item.status,
+          available_quantity: item.available_quantity || 0,
+          sold_quantity: item.sold_quantity || 0,
+          category_id: item.category_id,
+          permalink: item.permalink,
+          thumbnail: item.thumbnail,
+          condition: item.condition,
+        };
 
+        try {
+          // 2. Intentamos mejorar los datos con el detalle individual
+          const fullItem = await getItemDetails(item.id, token);
           return {
-            id: fullItem.id,
-            title: fullItem.title,
-            price: fullItem.price, // Real price from full details
-            currency_id: fullItem.currency_id,
-            status: fullItem.status,
+            ...base,
+            price: fullItem.price, // Precio más actualizado
             available_quantity: fullItem.available_quantity,
             sold_quantity: fullItem.sold_quantity,
-            category_id: fullItem.category_id,
-            permalink: fullItem.permalink,
-            thumbnail: fullItem.thumbnail,
-            condition: item.condition,
           };
         } catch (error) {
-          console.error(`Error fetching details for ${item.id}:`, error);
-          // Return item with data from search (may have price 0)
-          return {
-            id: item.id,
-            title: item.title,
-            price: item.price || 0,
-            currency_id: item.currency_id || "ARS",
-            status: item.status,
-            available_quantity: item.available_quantity || 0,
-            sold_quantity: item.sold_quantity || 0,
-            category_id: item.category_id,
-            permalink: item.permalink,
-            thumbnail: item.thumbnail,
-            condition: item.condition,
-          };
+          // 3. Si falla el detalle, devolvemos los datos base (NO ceros)
+          console.warn(
+            `Error en detalle de ${item.id}, usando datos de búsqueda`
+          );
+          return base;
         }
       })
     );
 
-    console.log("Listings with full details:", listingsWithDetails);
-
     return listingsWithDetails;
   } catch (error) {
-    console.error("Error fetching user listings:", error);
-    if (error instanceof Error) {
-      throw new Error(`Failed to fetch listings: ${error.message}`);
-    }
-    throw new Error("Failed to fetch listings: Unknown error");
+    console.error("Error general:", error);
+    throw error;
   }
 }
