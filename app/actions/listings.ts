@@ -42,13 +42,11 @@ export async function analyzeListing(
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("ml_access_token")?.value;
-    if (!token) throw new Error("Not authenticated with MercadoLibre");
+    if (!token) throw new Error("No autenticado con MercadoLibre");
 
-    const itemData: MLItemResponse = await getItemDetails(itemId, token);
-    const descData: MLDescriptionResponse = await getItemDescription(
-      itemId,
-      token
-    );
+    // 1. Obtener datos (Manual o desde botón)
+    const itemData = await getItemDetails(itemId, token);
+    const descData = await getItemDescription(itemId, token);
 
     const listing: MLListing = {
       item_id: itemData.id,
@@ -69,6 +67,7 @@ export async function analyzeListing(
 
     const supabase = getSupabaseClient();
 
+    // 2. Guardar con UPSERT (Evita que el botón se trabe si ya existe el ID)
     const { data: savedListing, error: listingError } = await supabase
       .from("listings")
       .upsert(
@@ -88,33 +87,35 @@ export async function analyzeListing(
       .select()
       .single();
 
-    if (listingError)
-      throw new Error(`Failed to save listing: ${listingError.message}`);
+    if (listingError) throw listingError;
 
     const listingDbId = savedListing.id;
 
-    // IMPORTANTE: Agregamos onConflict aquí para que el botón no se trabe
-    await supabase
-      .from("listing_descriptions")
-      .upsert(
-        { listing_id: listingDbId, plain_text: description.plain_text },
-        { onConflict: "listing_id" }
-      );
+    // Guardar descripción
+    await supabase.from("listing_descriptions").upsert(
+      {
+        listing_id: listingDbId,
+        plain_text: description.plain_text,
+      },
+      { onConflict: "listing_id" }
+    );
 
+    // 3. IA
     const recommendations = await analyzePublication(listing, description);
 
-    // IMPORTANTE: Cambiamos a upsert aquí también
-    await supabase
-      .from("ai_analyses")
-      .upsert(
-        { listing_id: listingDbId, recommendations: recommendations },
-        { onConflict: "listing_id" }
-      );
+    // Guardar análisis
+    await supabase.from("ai_analyses").upsert(
+      {
+        listing_id: listingDbId,
+        recommendations: recommendations,
+      },
+      { onConflict: "listing_id" }
+    );
 
     return { listing, description, analysis: recommendations };
   } catch (error: any) {
-    console.error("Error in analyzeListing:", error);
-    throw new Error(`Listing analysis failed: ${error.message}`);
+    console.error("Error en analyzeListing:", error);
+    throw new Error(error.message || "Error al analizar");
   }
 }
 
@@ -124,45 +125,27 @@ export async function fetchUserListings(): Promise<UserListing[]> {
     const token = cookieStore.get("ml_access_token")?.value;
     const userId = cookieStore.get("ml_user_id")?.value;
 
-    if (!token || !userId) throw new Error("No autenticado");
+    if (!token || !userId) throw new Error("Sesión expirada");
 
     const searchResponse = await getUserListings(userId, token, 0, 50);
 
-    const listingsWithDetails = await Promise.all(
-      searchResponse.results.map(async (item) => {
-        // DATOS BASE: Si falla el detalle, esto salva el precio
-        const baseData = {
-          id: item.id,
-          title: item.title,
-          price: (item as any).price ?? (item as any).sale_price ?? 0,
-          currency_id: item.currency_id || "ARS",
-          status: item.status,
-          available_quantity: item.available_quantity || 0,
-          sold_quantity: item.sold_quantity || 0,
-          category_id: item.category_id,
-          permalink: item.permalink,
-          thumbnail: item.thumbnail,
-          condition: item.condition,
-        };
-
-        try {
-          const fullItem = await getItemDetails(item.id, token);
-          return {
-            ...baseData,
-            price: fullItem.price ?? baseData.price,
-            available_quantity:
-              fullItem.available_quantity ?? baseData.available_quantity,
-            sold_quantity: fullItem.sold_quantity ?? baseData.sold_quantity,
-          };
-        } catch (error) {
-          return baseData; // Si falla el detalle individual, devolvemos la base
-        }
-      })
-    );
-
-    return listingsWithDetails;
+    // LA CLAVE: No pedimos getItemDetails para 50 items a la vez.
+    // Usamos los datos que ya trae el searchResponse para que la lista cargue rápido y con PRECIO.
+    return searchResponse.results.map((item: any) => ({
+      id: item.id,
+      title: item.title,
+      price: Number(item.price || 0), // Asegura que no sea 0 si la API lo manda
+      currency_id: item.currency_id || "ARS",
+      status: item.status,
+      available_quantity: Number(item.available_quantity || 0),
+      sold_quantity: Number(item.sold_quantity || 0),
+      category_id: item.category_id,
+      permalink: item.permalink,
+      thumbnail: item.thumbnail,
+      condition: item.condition,
+    }));
   } catch (error) {
     console.error("Error en fetchUserListings:", error);
-    return []; // No tiramos error para que no se rompa la pantalla
+    return [];
   }
 }
