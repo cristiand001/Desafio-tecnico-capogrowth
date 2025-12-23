@@ -6,10 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getAuthURL } from "@/lib/mercadolibre";
 import { analyzeListing } from "@/app/actions/listings";
 import { MLListing, AnalysisRecommendations } from "@/types";
-import { ProductGrid } from "@/app/components/ProductGrid";
-import { AnimatedBackground } from "@/app/components/AnimatedBackground";
-import { ScrollReveal } from "@/app/components/ScrollReveal";
-import { FeatureCard } from "@/app/components/FeatureCard";
 
 interface AnalysisResult {
   listing: MLListing;
@@ -19,35 +15,11 @@ interface AnalysisResult {
 
 function LoadingFallback() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50 flex items-center justify-center relative overflow-hidden">
-      <AnimatedBackground />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="relative z-10 text-center"
-      >
-        <motion.div
-          className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/40 backdrop-blur-xl shadow-xl mb-4"
-          animate={{
-            rotate: [0, 360],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            rotate: { duration: 2, repeat: Infinity, ease: "linear" },
-            scale: { duration: 2, repeat: Infinity, ease: "easeInOut" },
-          }}
-        >
-          <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full" />
-        </motion.div>
-        <motion.p
-          className="text-slate-700 font-semibold"
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        >
-          Loading...
-        </motion.p>
-      </motion.div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-12 h-12 border-3 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-slate-600">Loading...</p>
+      </div>
     </div>
   );
 }
@@ -113,137 +85,61 @@ function PageContent() {
   // Not authenticated view
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen py-12 px-4 relative overflow-hidden">
-        <AnimatedBackground />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
+        <div className="max-w-md w-full">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-8"
+          >
+            <h1 className="text-4xl font-bold text-slate-900 mb-2">
+              RataLibre
+            </h1>
+            <p className="text-slate-600">AI-powered listing optimization</p>
+          </motion.div>
 
-        <div className="max-w-4xl mx-auto relative z-10">
-          {/* Header */}
-          <ScrollReveal delay={0.1}>
-            <motion.div className="text-center mb-12 pt-8">
-              <motion.h1
-                className="text-5xl md:text-6xl font-black mb-3 bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 bg-clip-text text-transparent"
-                animate={{
-                  backgroundPosition: ["0%", "100%", "0%"],
-                }}
-                transition={{ duration: 8, repeat: Infinity }}
-                style={{ backgroundSize: "200%" }}
-              >
-                RataLibre
-              </motion.h1>
-              <motion.p
-                className="text-lg text-slate-600"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-              >
-                AI-Powered insights to optimize your listings
-              </motion.p>
-            </motion.div>
-          </ScrollReveal>
-
-          {/* Hero Card */}
-          <ScrollReveal delay={0.3}>
-            <motion.div
-              className="bg-white/40 backdrop-blur-2xl rounded-3xl shadow-xl border border-white/50 p-8 max-w-md mx-auto mb-12"
-              whileHover={{ y: -5 }}
-            >
-              <AnimatePresence mode="wait">
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="mb-4 p-3 rounded-xl bg-red-50/80 backdrop-blur-xl border border-red-200"
-                  >
-                    <p className="text-red-700 text-sm">{error}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <div className="text-center">
-                <motion.button
-                  onClick={handleConnect}
-                  className="w-full py-4 px-6 bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600 text-white font-semibold rounded-xl shadow-lg transition-all"
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  Connect with MercadoLibre
-                </motion.button>
-                <p className="mt-4 text-slate-500 text-xs">
-                  🔒 Secure OAuth2 • Your data stays private
-                </p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white rounded-2xl shadow-lg p-8"
+          >
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600 text-sm">{error}</p>
               </div>
-            </motion.div>
-          </ScrollReveal>
+            )}
 
-          {/* Features */}
-          <ScrollReveal delay={0.1}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <FeatureCard
-                icon={
-                  <svg
-                    className="w-8 h-8 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                }
-                title="Instant Analysis"
-                description="Get AI recommendations in seconds"
-                delay={0.1}
-                gradient="bg-gradient-to-br from-violet-500 to-violet-600"
-              />
-              <FeatureCard
-                icon={
-                  <svg
-                    className="w-8 h-8 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                }
-                title="Actionable Insights"
-                description="Clear steps to improve conversions"
-                delay={0.2}
-                gradient="bg-gradient-to-br from-purple-500 to-purple-600"
-              />
-              <FeatureCard
-                icon={
-                  <svg
-                    className="w-8 h-8 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                    />
-                  </svg>
-                }
-                title="Boost Sales"
-                description="Optimize for maximum revenue"
-                delay={0.3}
-                gradient="bg-gradient-to-br from-fuchsia-500 to-fuchsia-600"
-              />
-            </div>
-          </ScrollReveal>
+            <button
+              onClick={handleConnect}
+              className="w-full py-3 px-4 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg transition-colors"
+            >
+              Connect with MercadoLibre
+            </button>
+
+            <p className="text-center text-xs text-slate-500 mt-4">
+              🔒 Secure OAuth2 authentication
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-3 gap-4 mt-8">
+            {[
+              { emoji: "⚡", text: "Instant" },
+              { emoji: "🎯", text: "Accurate" },
+              { emoji: "📈", text: "Results" },
+            ].map((item, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + idx * 0.1 }}
+                className="bg-white rounded-xl p-4 text-center shadow-sm"
+              >
+                <div className="text-2xl mb-1">{item.emoji}</div>
+                <p className="text-sm text-slate-600">{item.text}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -251,55 +147,30 @@ function PageContent() {
 
   // Authenticated view
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50 py-6 px-4 relative overflow-hidden">
-      <AnimatedBackground />
-
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* Compact Header */}
-        <motion.div
-          className="text-center mb-6"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/30 backdrop-blur-xl border border-white/50 mb-3">
-            <motion.div
-              className="w-1.5 h-1.5 rounded-full bg-green-500"
-              animate={{ scale: [1, 1.3, 1], opacity: [1, 0.7, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-            <span className="text-green-700 text-xs font-semibold">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+      <div className="max-w-4xl mx-auto py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 rounded-full mb-3">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <span className="text-green-700 text-sm font-medium">
               Connected
             </span>
           </div>
-          <h1 className="text-3xl font-black bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
-            My Listings
+          <h1 className="text-3xl font-bold text-slate-900">
+            Analyze Your Listing
           </h1>
-        </motion.div>
+        </div>
 
-        {/* Product Grid */}
-        <ProductGrid
-          onAnalysisStart={(itemId) => {
-            setItemId(itemId);
-            setLoading(true);
-            setResult(null);
-            setError("");
-          }}
-          onAnalysisComplete={(itemId) => {}}
-        />
-
-        {/* Compact Input */}
-        <motion.div
-          className="bg-white/40 backdrop-blur-2xl rounded-2xl shadow-lg border border-white/50 p-4 mb-6 mt-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
+        {/* Input */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
           <div className="flex gap-3">
             <input
               type="text"
               value={itemId}
               onChange={(e) => setItemId(e.target.value)}
-              placeholder="MLA123456789"
-              className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 bg-white/50 backdrop-blur-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100 transition-all"
+              placeholder="Enter listing ID (e.g., MLA123456789)"
+              className="flex-1 px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
               onKeyDown={(e) =>
                 e.key === "Enter" && !loading && handleAnalyze()
               }
@@ -308,19 +179,19 @@ function PageContent() {
             <button
               onClick={handleAnalyze}
               disabled={loading || !itemId.trim()}
-              className="px-6 py-2.5 bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600 text-white font-semibold rounded-xl shadow-md disabled:opacity-50 transition-all flex items-center gap-2"
+              className="px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
             >
               {loading ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Analyzing</span>
+                  Analyzing...
                 </>
               ) : (
-                "Analyze"
+                <>Analyze</>
               )}
             </button>
           </div>
-        </motion.div>
+        </div>
 
         {/* Error */}
         <AnimatePresence>
@@ -329,9 +200,11 @@ function PageContent() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="mb-4 p-3 rounded-xl bg-red-50/80 backdrop-blur-xl border border-red-200"
+              className="mb-6"
             >
-              <p className="text-red-700 text-sm">{error}</p>
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <p className="text-red-600 text-sm">{error}</p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -343,20 +216,13 @@ function PageContent() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-center py-16 bg-white/40 backdrop-blur-2xl rounded-2xl shadow-lg border border-white/50"
+              className="bg-white rounded-2xl shadow-lg p-12 text-center"
             >
-              <motion.div
-                className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-100 to-fuchsia-100 mb-4"
-                animate={{ rotate: [0, 360], scale: [1, 1.1, 1] }}
-                transition={{
-                  rotate: { duration: 2, repeat: Infinity },
-                  scale: { duration: 2, repeat: Infinity },
-                }}
-              >
-                <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
-              </motion.div>
-              <h3 className="text-xl font-bold text-slate-800">Analyzing...</h3>
-              <p className="text-slate-600 text-sm mt-1">Running AI analysis</p>
+              <div className="w-16 h-16 border-4 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-slate-900 mb-1">
+                Analyzing...
+              </h3>
+              <p className="text-slate-600 text-sm">Getting AI insights</p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -368,71 +234,60 @@ function PageContent() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="space-y-4"
+              className="space-y-6"
             >
-              {/* Publication Info */}
-              <motion.div className="bg-white/40 backdrop-blur-2xl rounded-2xl shadow-lg border border-white/50 p-6">
-                <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
-                  <span className="text-2xl">📦</span>
+              {/* Listing Info */}
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h2 className="text-xl font-semibold text-slate-900 mb-4">
                   {result.listing.title}
                 </h2>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <motion.div
-                    className="bg-gradient-to-br from-emerald-50/80 to-emerald-100/80 backdrop-blur-xl rounded-xl p-3 border border-emerald-200/50"
-                    whileHover={{ scale: 1.05, y: -2 }}
-                  >
-                    <p className="text-xs font-medium text-emerald-700 mb-0.5">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4">
+                    <p className="text-xs text-green-600 font-medium mb-1">
                       Price
                     </p>
-                    <p className="text-xl font-bold text-emerald-700">
+                    <p className="text-2xl font-bold text-green-700">
                       ${result.listing.price.toLocaleString()}
                     </p>
-                  </motion.div>
+                  </div>
 
-                  <motion.div
-                    className="bg-gradient-to-br from-blue-50/80 to-blue-100/80 backdrop-blur-xl rounded-xl p-3 border border-blue-200/50"
-                    whileHover={{ scale: 1.05, y: -2 }}
-                  >
-                    <p className="text-xs font-medium text-blue-700 mb-0.5">
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4">
+                    <p className="text-xs text-blue-600 font-medium mb-1">
                       Stock
                     </p>
-                    <p className="text-xl font-bold text-blue-700">
+                    <p className="text-2xl font-bold text-blue-700">
                       {result.listing.available_quantity}
                     </p>
-                  </motion.div>
+                  </div>
 
-                  <motion.div
-                    className="bg-gradient-to-br from-purple-50/80 to-purple-100/80 backdrop-blur-xl rounded-xl p-3 border border-purple-200/50"
-                    whileHover={{ scale: 1.05, y: -2 }}
-                  >
-                    <p className="text-xs font-medium text-purple-700 mb-0.5">
+                  <div className="bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl p-4">
+                    <p className="text-xs text-purple-600 font-medium mb-1">
                       Sold
                     </p>
-                    <p className="text-xl font-bold text-purple-700">
+                    <p className="text-2xl font-bold text-purple-700">
                       {result.listing.sold_quantity}
                     </p>
-                  </motion.div>
+                  </div>
 
-                  <motion.div
+                  <div
                     className={`bg-gradient-to-br ${
                       result.listing.status === "active"
-                        ? "from-green-50/80 to-green-100/80 border-green-200/50"
-                        : "from-yellow-50/80 to-yellow-100/80 border-yellow-200/50"
-                    } backdrop-blur-xl rounded-xl p-3 border`}
-                    whileHover={{ scale: 1.05, y: -2 }}
+                        ? "from-green-50 to-emerald-50"
+                        : "from-yellow-50 to-amber-50"
+                    } rounded-xl p-4`}
                   >
                     <p
-                      className={`text-xs font-medium ${
+                      className={`text-xs font-medium mb-1 ${
                         result.listing.status === "active"
-                          ? "text-green-700"
-                          : "text-yellow-700"
-                      } mb-0.5`}
+                          ? "text-green-600"
+                          : "text-yellow-600"
+                      }`}
                     >
                       Status
                     </p>
                     <span
-                      className={`inline-flex px-2 py-0.5 rounded-full text-xs font-bold ${
+                      className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold ${
                         result.listing.status === "active"
                           ? "bg-green-200 text-green-800"
                           : "bg-yellow-200 text-yellow-800"
@@ -440,30 +295,29 @@ function PageContent() {
                     >
                       {result.listing.status}
                     </span>
-                  </motion.div>
+                  </div>
                 </div>
-              </motion.div>
+              </div>
 
               {/* AI Recommendations */}
-              <motion.div className="bg-white/40 backdrop-blur-2xl rounded-2xl shadow-lg border border-white/50 p-6">
-                <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
-                  <span className="text-2xl">✨</span>
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h2 className="text-xl font-semibold text-slate-900 mb-6">
                   AI Recommendations
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid md:grid-cols-2 gap-4">
                   {/* Title */}
-                  <div className="p-4 rounded-xl bg-blue-50/60 backdrop-blur-xl border border-blue-200/50">
-                    <h3 className="font-bold text-blue-700 mb-2 flex items-center gap-1.5 text-sm">
-                      <span>💡</span> Title
+                  <div className="bg-blue-50 rounded-xl p-4">
+                    <h3 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                      <span>💡</span> Title Improvements
                     </h3>
-                    <ul className="space-y-1.5">
+                    <ul className="space-y-2">
                       {result.analysis.title_improvements.map((item, idx) => (
                         <li
                           key={idx}
-                          className="flex items-start gap-2 text-slate-700 text-xs"
+                          className="text-sm text-slate-700 flex items-start gap-2"
                         >
-                          <span className="text-blue-500 text-sm">•</span>
+                          <span className="text-blue-500 mt-0.5">•</span>
                           <span>{item}</span>
                         </li>
                       ))}
@@ -471,17 +325,17 @@ function PageContent() {
                   </div>
 
                   {/* Description */}
-                  <div className="p-4 rounded-xl bg-red-50/60 backdrop-blur-xl border border-red-200/50">
-                    <h3 className="font-bold text-red-700 mb-2 flex items-center gap-1.5 text-sm">
-                      <span>⚠️</span> Description
+                  <div className="bg-red-50 rounded-xl p-4">
+                    <h3 className="font-semibold text-red-900 mb-3 flex items-center gap-2">
+                      <span>⚠️</span> Description Issues
                     </h3>
-                    <ul className="space-y-1.5">
+                    <ul className="space-y-2">
                       {result.analysis.description_issues.map((item, idx) => (
                         <li
                           key={idx}
-                          className="flex items-start gap-2 text-slate-700 text-xs"
+                          className="text-sm text-slate-700 flex items-start gap-2"
                         >
-                          <span className="text-red-500 text-sm">•</span>
+                          <span className="text-red-500 mt-0.5">•</span>
                           <span>{item}</span>
                         </li>
                       ))}
@@ -489,18 +343,18 @@ function PageContent() {
                   </div>
 
                   {/* Opportunities */}
-                  <div className="p-4 rounded-xl bg-green-50/60 backdrop-blur-xl border border-green-200/50">
-                    <h3 className="font-bold text-green-700 mb-2 flex items-center gap-1.5 text-sm">
+                  <div className="bg-green-50 rounded-xl p-4">
+                    <h3 className="font-semibold text-green-900 mb-3 flex items-center gap-2">
                       <span>📈</span> Opportunities
                     </h3>
-                    <ul className="space-y-1.5">
+                    <ul className="space-y-2">
                       {result.analysis.conversion_opportunities.map(
                         (item, idx) => (
                           <li
                             key={idx}
-                            className="flex items-start gap-2 text-slate-700 text-xs"
+                            className="text-sm text-slate-700 flex items-start gap-2"
                           >
-                            <span className="text-green-500 text-sm">•</span>
+                            <span className="text-green-500 mt-0.5">•</span>
                             <span>{item}</span>
                           </li>
                         )
@@ -509,39 +363,37 @@ function PageContent() {
                   </div>
 
                   {/* Risks */}
-                  <div className="p-4 rounded-xl bg-orange-50/60 backdrop-blur-xl border border-orange-200/50">
-                    <h3 className="font-bold text-orange-700 mb-2 flex items-center gap-1.5 text-sm">
+                  <div className="bg-orange-50 rounded-xl p-4">
+                    <h3 className="font-semibold text-orange-900 mb-3 flex items-center gap-2">
                       <span>🚨</span> Risks
                     </h3>
-                    <ul className="space-y-1.5">
+                    <ul className="space-y-2">
                       {result.analysis.commercial_risks.map((item, idx) => (
                         <li
                           key={idx}
-                          className="flex items-start gap-2 text-slate-700 text-xs"
+                          className="text-sm text-slate-700 flex items-start gap-2"
                         >
-                          <span className="text-orange-500 text-sm">•</span>
+                          <span className="text-orange-500 mt-0.5">•</span>
                           <span>{item}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                 </div>
-              </motion.div>
+              </div>
 
-              {/* Analyze Another */}
-              <motion.div className="text-center pt-2">
-                <motion.button
+              {/* Action Button */}
+              <div className="text-center">
+                <button
                   onClick={() => {
                     setResult(null);
                     setItemId("");
                   }}
-                  className="px-6 py-2.5 bg-white/50 backdrop-blur-xl border border-white/80 text-slate-700 font-semibold rounded-xl shadow-md hover:bg-white/70 transition-all"
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
+                  className="px-8 py-3 bg-white border-2 border-slate-200 hover:border-slate-300 text-slate-700 font-medium rounded-lg transition-colors"
                 >
-                  Analyze Another
-                </motion.button>
-              </motion.div>
+                  Analyze Another Listing
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
