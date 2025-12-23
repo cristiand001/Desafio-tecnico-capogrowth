@@ -53,21 +53,12 @@ export async function analyzeListing(
     }
 
     // 2. Fetch data from MercadoLibre API
-    console.log(`Fetching item details for ${itemId}...`);
     const itemData: MLItemResponse = await getItemDetails(itemId, token);
-    console.log("Item data received:", itemData.id, itemData.title);
-
-    console.log(`Fetching description for ${itemId}...`);
     const descData: MLDescriptionResponse = await getItemDescription(
       itemId,
       token
     );
-    console.log(
-      "Description received, length:",
-      descData.plain_text?.length || 0
-    );
 
-    // 3. Transform to database format
     const listing: MLListing = {
       item_id: itemData.id,
       title: itemData.title,
@@ -85,11 +76,10 @@ export async function analyzeListing(
         descData.plain_text || descData.text || "Sin descripción disponible.",
     };
 
-    // 4. Save to Supabase
+    // 2. Guardado en Supabase (Con UPSERT corregido)
     const supabase = getSupabaseClient();
 
-    // Upsert listing
-    console.log(`Saving listing to database...`);
+    // Guardar publicación
     const { data: savedListing, error: listingError } = await supabase
       .from("listings")
       .upsert(
@@ -104,66 +94,54 @@ export async function analyzeListing(
           permalink: listing.permalink,
           updated_at: new Date().toISOString(),
         },
-        { onConflict: "item_id" }
+        { onConflict: "item_id" } // Evita error de duplicado
       )
       .select()
       .single();
 
-    if (listingError) {
-      console.error("Error saving listing:", listingError);
-      throw new Error(`Failed to save listing: ${listingError.message}`);
-    }
+    if (listingError)
+      throw new Error(`Error saving listing: ${listingError.message}`);
 
     const listingDbId = savedListing.id;
 
-    // Insert description
-    console.log(`Saving description to database...`);
+    // Guardar descripción (Agregado onConflict)
     const { error: descError } = await supabase
       .from("listing_descriptions")
-      .upsert({
-        listing_id: listingDbId,
-        plain_text: description.plain_text,
-      });
+      .upsert(
+        {
+          listing_id: listingDbId,
+          plain_text: description.plain_text,
+        },
+        { onConflict: "listing_id" } // Clave para que el botón no se trabe
+      );
 
-    if (descError) {
-      console.error("Error saving description:", descError);
-      throw new Error(`Failed to save description: ${descError.message}`);
-    }
+    if (descError)
+      throw new Error(`Error saving description: ${descError.message}`);
 
-    // Update description with actual listing ID
-    description.listing_id = listingDbId;
-
-    // 5. Analyze with AI
-    console.log(`Analyzing listing with AI...`);
+    // 3. IA y Recomendaciones
     const recommendations = await analyzePublication(listing, description);
 
-    // 6. Save analysis to database
-    console.log(`Saving AI analysis to database...`);
-    const { error: analysisError } = await supabase.from("ai_analyses").insert({
-      listing_id: listingDbId,
-      recommendations: recommendations,
-    });
+    // 4. Guardar Análisis (CAMBIADO de insert a UPSERT)
+    // Esto es lo que hacía que el botón no respondiera al segundo clic
+    const { error: analysisError } = await supabase.from("ai_analyses").upsert(
+      {
+        listing_id: listingDbId,
+        recommendations: recommendations,
+      },
+      { onConflict: "listing_id" }
+    );
 
-    if (analysisError) {
-      console.error("Error saving analysis:", analysisError);
-      throw new Error(`Failed to save analysis: ${analysisError.message}`);
-    }
-
-    console.log(`Analysis complete for ${itemId}`);
+    if (analysisError)
+      throw new Error(`Error saving analysis: ${analysisError.message}`);
 
     return {
       listing,
       description,
       analysis: recommendations,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error in analyzeListing:", error);
-
-    if (error instanceof Error) {
-      throw new Error(`Listing analysis failed: ${error.message}`);
-    }
-
-    throw new Error("Listing analysis failed: Unknown error");
+    throw new Error(`Listing analysis failed: ${error.message}`);
   }
 }
 
@@ -179,12 +157,10 @@ export async function fetchUserListings(): Promise<UserListing[]> {
 
     const listingsWithDetails = await Promise.all(
       searchResponse.results.map(async (item) => {
-        // --- 1. DATOS BASE (Lo que ya tenemos) ---
-        // Esto garantiza que NUNCA verás ARS $0 si la búsqueda inicial trajo datos.
         const baseData = {
           id: item.id,
           title: item.title,
-          price: item.price || 0,
+          price: (item as any).price ?? (item as any).sale_price ?? 0,
           currency_id: item.currency_id || "ARS",
           status: item.status,
           available_quantity: item.available_quantity || 0,
@@ -200,13 +176,12 @@ export async function fetchUserListings(): Promise<UserListing[]> {
           const fullItem = await getItemDetails(item.id, token);
           return {
             ...baseData,
-            price: fullItem.price, // Precio actualizado
-            available_quantity: fullItem.available_quantity,
-            sold_quantity: fullItem.sold_quantity,
+            price: fullItem.price ?? baseData.price,
+            available_quantity:
+              fullItem.available_quantity ?? baseData.available_quantity,
+            sold_quantity: fullItem.sold_quantity ?? baseData.sold_quantity,
           };
         } catch (error) {
-          // --- 3. FALLBACK SEGURO ---
-          // Si falla el detalle individual, devolvemos los datos de baseData
           console.warn(`Aviso: Usando datos de búsqueda para ${item.id}`);
           return baseData;
         }
