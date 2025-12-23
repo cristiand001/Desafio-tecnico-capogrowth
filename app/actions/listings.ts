@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import {
   getItemDetails,
   getItemDescription,
+  getUserListings,
   MLItemResponse,
   MLDescriptionResponse,
 } from "@/lib/mercadolibre";
@@ -14,6 +15,20 @@ import {
   ListingDescription,
   AnalysisRecommendations,
 } from "@/types";
+
+export interface UserListing {
+  id: string;
+  title: string;
+  price: number;
+  currency_id: string;
+  status: string;
+  available_quantity: number;
+  sold_quantity: number;
+  category_id: string;
+  permalink: string;
+  thumbnail: string;
+  condition: string;
+}
 
 interface AnalyzeListingResult {
   listing: MLListing;
@@ -147,5 +162,43 @@ export async function analyzeListing(
     }
 
     throw new Error("Listing analysis failed: Unknown error");
+  }
+}
+
+export async function fetchUserListings(): Promise<UserListing[]> {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("ml_access_token")?.value;
+    const userId = cookieStore.get("ml_user_id")?.value;
+
+    if (!token) {
+      throw new Error("Not authenticated with MercadoLibre");
+    }
+
+    if (!userId) {
+      throw new Error("User ID not found");
+    }
+
+    const response = await getUserListings(userId, token, 0, 50);
+    
+    return response.results.map((item) => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      currency_id: item.currency_id,
+      status: item.status,
+      available_quantity: item.available_quantity,
+      sold_quantity: item.sold_quantity,
+      category_id: item.category_id,
+      permalink: item.permalink,
+      thumbnail: item.thumbnail,
+      condition: item.condition,
+    }));
+  } catch (error) {
+    console.error("Error fetching user listings:", error);
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch listings: ${error.message}`);
+    }
+    throw new Error("Failed to fetch listings: Unknown error");
   }
 }

@@ -165,3 +165,65 @@ export async function getItemDescription(
     throw error;
   }
 }
+
+// User items search response from MercadoLibre API
+export interface MLUserItemsResponse {
+  results: Array<{
+    id: string;
+    title: string;
+    price: number;
+    currency_id: string;
+    status: string;
+    available_quantity: number;
+    sold_quantity: number;
+    category_id: string;
+    permalink: string;
+    thumbnail: string;
+    pictures: Array<{ url: string }>;
+    attributes: Array<{ id: string; name: string; value_name: string }>;
+    condition: string;
+  }>;
+  paging: {
+    total: number;
+    offset: number;
+    limit: number;
+  };
+}
+
+/**
+ * Fetches user's listings from MercadoLibre API.
+ */
+export async function getUserListings(
+  userId: string,
+  accessToken: string,
+  offset: number = 0,
+  limit: number = 50
+): Promise<MLUserItemsResponse> {
+  try {
+    const response = await axios.get<MLUserItemsResponse>(
+      `${ML_API_BASE_URL}/users/${userId}/items/search`,
+      {
+        params: {
+          offset,
+          limit,
+          status: "active",
+        },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        `Failed to fetch user listings: ${
+          error.response?.data?.message || error.message
+        }`
+      );
+    }
+    throw error;
+  }
+}

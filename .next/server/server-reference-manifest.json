@@ -1,0 +1,97 @@
+{
+  "node": {
+    "00705461cb4432d9b3469e2890ccddffd29a42c748": {
+      "workers": {
+        "app/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%2C%5B%7B%22id%22%3A%2200705461cb4432d9b3469e2890ccddffd29a42c748%22%2C%22exportedName%22%3A%22getAuthURL%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%2240e7e2d52419ee93d6cb35d4c96c2079b30b870ed4%22%2C%22exportedName%22%3A%22exchangeCodeForToken%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%226088c0f3e374e18984a41f8739af027367bf4ac4d8%22%2C%22exportedName%22%3A%22getItemDetails%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%2260a127ca190b615ce0036c87b0917590f912ec759d%22%2C%22exportedName%22%3A%22getItemDescription%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%22785e4e82d809441e97998067b385ebf0e5cfac98e5%22%2C%22exportedName%22%3A%22getUserListings%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%2C%5B%7B%22id%22%3A%2200d027c5e0fd42ec7b8310d585bbe87e227972d981%22%2C%22exportedName%22%3A%22fetchUserListings%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%7D%2C%7B%22id%22%3A%2240d1284bb77036fedfb8cfde46d3ab15b66fd10cc4%22%2C%22exportedName%22%3A%22analyzeListing%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      },
+      "filename": "../C:\\Users\\Cristian Y Tobias\\Desktop\\Desafio-tecnico\\lib\\mercadolibre.ts",
+      "exportedName": "getAuthURL"
+    },
+    "40e7e2d52419ee93d6cb35d4c96c2079b30b870ed4": {
+      "workers": {
+        "app/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%2C%5B%7B%22id%22%3A%2200705461cb4432d9b3469e2890ccddffd29a42c748%22%2C%22exportedName%22%3A%22getAuthURL%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%2240e7e2d52419ee93d6cb35d4c96c2079b30b870ed4%22%2C%22exportedName%22%3A%22exchangeCodeForToken%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%226088c0f3e374e18984a41f8739af027367bf4ac4d8%22%2C%22exportedName%22%3A%22getItemDetails%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%2260a127ca190b615ce0036c87b0917590f912ec759d%22%2C%22exportedName%22%3A%22getItemDescription%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%22785e4e82d809441e97998067b385ebf0e5cfac98e5%22%2C%22exportedName%22%3A%22getUserListings%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%2C%5B%7B%22id%22%3A%2200d027c5e0fd42ec7b8310d585bbe87e227972d981%22%2C%22exportedName%22%3A%22fetchUserListings%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%7D%2C%7B%22id%22%3A%2240d1284bb77036fedfb8cfde46d3ab15b66fd10cc4%22%2C%22exportedName%22%3A%22analyzeListing%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      },
+      "filename": "../C:\\Users\\Cristian Y Tobias\\Desktop\\Desafio-tecnico\\lib\\mercadolibre.ts",
+      "exportedName": "exchangeCodeForToken"
+    },
+    "6088c0f3e374e18984a41f8739af027367bf4ac4d8": {
+      "workers": {
+        "app/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%2C%5B%7B%22id%22%3A%2200705461cb4432d9b3469e2890ccddffd29a42c748%22%2C%22exportedName%22%3A%22getAuthURL%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%2240e7e2d52419ee93d6cb35d4c96c2079b30b870ed4%22%2C%22exportedName%22%3A%22exchangeCodeForToken%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%226088c0f3e374e18984a41f8739af027367bf4ac4d8%22%2C%22exportedName%22%3A%22getItemDetails%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%2260a127ca190b615ce0036c87b0917590f912ec759d%22%2C%22exportedName%22%3A%22getItemDescription%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%22785e4e82d809441e97998067b385ebf0e5cfac98e5%22%2C%22exportedName%22%3A%22getUserListings%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%2C%5B%7B%22id%22%3A%2200d027c5e0fd42ec7b8310d585bbe87e227972d981%22%2C%22exportedName%22%3A%22fetchUserListings%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%7D%2C%7B%22id%22%3A%2240d1284bb77036fedfb8cfde46d3ab15b66fd10cc4%22%2C%22exportedName%22%3A%22analyzeListing%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      },
+      "filename": "../C:\\Users\\Cristian Y Tobias\\Desktop\\Desafio-tecnico\\lib\\mercadolibre.ts",
+      "exportedName": "getItemDetails"
+    },
+    "60a127ca190b615ce0036c87b0917590f912ec759d": {
+      "workers": {
+        "app/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%2C%5B%7B%22id%22%3A%2200705461cb4432d9b3469e2890ccddffd29a42c748%22%2C%22exportedName%22%3A%22getAuthURL%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%2240e7e2d52419ee93d6cb35d4c96c2079b30b870ed4%22%2C%22exportedName%22%3A%22exchangeCodeForToken%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%226088c0f3e374e18984a41f8739af027367bf4ac4d8%22%2C%22exportedName%22%3A%22getItemDetails%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%2260a127ca190b615ce0036c87b0917590f912ec759d%22%2C%22exportedName%22%3A%22getItemDescription%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%22785e4e82d809441e97998067b385ebf0e5cfac98e5%22%2C%22exportedName%22%3A%22getUserListings%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%2C%5B%7B%22id%22%3A%2200d027c5e0fd42ec7b8310d585bbe87e227972d981%22%2C%22exportedName%22%3A%22fetchUserListings%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%7D%2C%7B%22id%22%3A%2240d1284bb77036fedfb8cfde46d3ab15b66fd10cc4%22%2C%22exportedName%22%3A%22analyzeListing%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      },
+      "filename": "../C:\\Users\\Cristian Y Tobias\\Desktop\\Desafio-tecnico\\lib\\mercadolibre.ts",
+      "exportedName": "getItemDescription"
+    },
+    "785e4e82d809441e97998067b385ebf0e5cfac98e5": {
+      "workers": {
+        "app/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%2C%5B%7B%22id%22%3A%2200705461cb4432d9b3469e2890ccddffd29a42c748%22%2C%22exportedName%22%3A%22getAuthURL%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%2240e7e2d52419ee93d6cb35d4c96c2079b30b870ed4%22%2C%22exportedName%22%3A%22exchangeCodeForToken%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%226088c0f3e374e18984a41f8739af027367bf4ac4d8%22%2C%22exportedName%22%3A%22getItemDetails%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%2260a127ca190b615ce0036c87b0917590f912ec759d%22%2C%22exportedName%22%3A%22getItemDescription%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%22785e4e82d809441e97998067b385ebf0e5cfac98e5%22%2C%22exportedName%22%3A%22getUserListings%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%2C%5B%7B%22id%22%3A%2200d027c5e0fd42ec7b8310d585bbe87e227972d981%22%2C%22exportedName%22%3A%22fetchUserListings%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%7D%2C%7B%22id%22%3A%2240d1284bb77036fedfb8cfde46d3ab15b66fd10cc4%22%2C%22exportedName%22%3A%22analyzeListing%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      },
+      "filename": "../C:\\Users\\Cristian Y Tobias\\Desktop\\Desafio-tecnico\\lib\\mercadolibre.ts",
+      "exportedName": "getUserListings"
+    },
+    "00d027c5e0fd42ec7b8310d585bbe87e227972d981": {
+      "workers": {
+        "app/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%2C%5B%7B%22id%22%3A%2200705461cb4432d9b3469e2890ccddffd29a42c748%22%2C%22exportedName%22%3A%22getAuthURL%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%2240e7e2d52419ee93d6cb35d4c96c2079b30b870ed4%22%2C%22exportedName%22%3A%22exchangeCodeForToken%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%226088c0f3e374e18984a41f8739af027367bf4ac4d8%22%2C%22exportedName%22%3A%22getItemDetails%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%2260a127ca190b615ce0036c87b0917590f912ec759d%22%2C%22exportedName%22%3A%22getItemDescription%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%22785e4e82d809441e97998067b385ebf0e5cfac98e5%22%2C%22exportedName%22%3A%22getUserListings%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%2C%5B%7B%22id%22%3A%2200d027c5e0fd42ec7b8310d585bbe87e227972d981%22%2C%22exportedName%22%3A%22fetchUserListings%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%7D%2C%7B%22id%22%3A%2240d1284bb77036fedfb8cfde46d3ab15b66fd10cc4%22%2C%22exportedName%22%3A%22analyzeListing%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      },
+      "filename": "../C:\\Users\\Cristian Y Tobias\\Desktop\\Desafio-tecnico\\app\\actions\\listings.ts",
+      "exportedName": "fetchUserListings"
+    },
+    "40d1284bb77036fedfb8cfde46d3ab15b66fd10cc4": {
+      "workers": {
+        "app/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%2C%5B%7B%22id%22%3A%2200705461cb4432d9b3469e2890ccddffd29a42c748%22%2C%22exportedName%22%3A%22getAuthURL%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%2240e7e2d52419ee93d6cb35d4c96c2079b30b870ed4%22%2C%22exportedName%22%3A%22exchangeCodeForToken%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%226088c0f3e374e18984a41f8739af027367bf4ac4d8%22%2C%22exportedName%22%3A%22getItemDetails%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%2260a127ca190b615ce0036c87b0917590f912ec759d%22%2C%22exportedName%22%3A%22getItemDescription%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%2C%7B%22id%22%3A%22785e4e82d809441e97998067b385ebf0e5cfac98e5%22%2C%22exportedName%22%3A%22getUserListings%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Clib%5C%5Cmercadolibre.ts%22%7D%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%2C%5B%7B%22id%22%3A%2200d027c5e0fd42ec7b8310d585bbe87e227972d981%22%2C%22exportedName%22%3A%22fetchUserListings%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%7D%2C%7B%22id%22%3A%2240d1284bb77036fedfb8cfde46d3ab15b66fd10cc4%22%2C%22exportedName%22%3A%22analyzeListing%22%2C%22filename%22%3A%22..%2FC%3A%5C%5CUsers%5C%5CCristian%20Y%20Tobias%5C%5CDesktop%5C%5CDesafio-tecnico%5C%5Capp%5C%5Cactions%5C%5Clistings.ts%22%7D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      },
+      "filename": "../C:\\Users\\Cristian Y Tobias\\Desktop\\Desafio-tecnico\\app\\actions\\listings.ts",
+      "exportedName": "analyzeListing"
+    }
+  },
+  "edge": {},
+  "encryptionKey": "eq08pzJP/Hp9s21j4p5ZOg+VXMYoZwJnDCcLCAIjLCo="
+}
