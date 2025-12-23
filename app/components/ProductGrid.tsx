@@ -183,18 +183,18 @@ export function ProductGrid({
                           backgroundClip: "text",
                         }}
                       >
-                        ${listing.price.toLocaleString()}
+                        ${listing.price?.toLocaleString() || "0"}
                       </div>
 
                       {/* Stats */}
                       <div className="flex gap-4 text-xs text-foreground/60">
                         <div className="flex items-center gap-1.5">
                           <span>📦</span>
-                          <span>{listing.available_quantity} stock</span>
+                          <span>{listing.available_quantity || 0} stock</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <span>✓</span>
-                          <span>{listing.sold_quantity} vendidos</span>
+                          <span>{listing.sold_quantity || 0} vendidos</span>
                         </div>
                       </div>
 
