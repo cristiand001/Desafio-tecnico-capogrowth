@@ -8,6 +8,7 @@ interface GlassCardProps {
   className?: string;
   glow?: boolean;
   delay?: number;
+  onClick?: () => void;
 }
 
 export const GlassCard = ({

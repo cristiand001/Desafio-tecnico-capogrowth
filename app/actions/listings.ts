@@ -180,20 +180,33 @@ export async function fetchUserListings(): Promise<UserListing[]> {
     }
 
     const response = await getUserListings(userId, token, 0, 50);
-    
-    return response.results.map((item) => ({
-      id: item.id,
-      title: item.title,
-      price: item.price,
-      currency_id: item.currency_id,
-      status: item.status,
-      available_quantity: item.available_quantity,
-      sold_quantity: item.sold_quantity,
-      category_id: item.category_id,
-      permalink: item.permalink,
-      thumbnail: item.thumbnail,
-      condition: item.condition,
-    }));
+
+    // DEBUG: Ver qué trae la API
+    console.log(
+      "MercadoLibre API Response:",
+      JSON.stringify(response.results[0], null, 2)
+    );
+
+    return response.results.map((item) => {
+      // DEBUG: Ver cada item
+      console.log(
+        `Item ${item.id}: price=${item.price}, currency=${item.currency_id}`
+      );
+
+      return {
+        id: item.id,
+        title: item.title,
+        price: item.price || 0, // Default 0 si no hay precio
+        currency_id: item.currency_id || "ARS",
+        status: item.status,
+        available_quantity: item.available_quantity || 0,
+        sold_quantity: item.sold_quantity || 0,
+        category_id: item.category_id,
+        permalink: item.permalink,
+        thumbnail: item.thumbnail,
+        condition: item.condition,
+      };
+    });
   } catch (error) {
     console.error("Error fetching user listings:", error);
     if (error instanceof Error) {

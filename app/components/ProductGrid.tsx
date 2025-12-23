@@ -8,7 +8,6 @@ import {
   analyzeListing,
 } from "@/app/actions/listings";
 import { GlassCard } from "./GlassCard";
-import { NeonButton } from "./NeonButton";
 
 interface ProductGridProps {
   onAnalysisStart?: (itemId: string) => void;
@@ -31,6 +30,7 @@ export function ProductGrid({
         setLoading(true);
         setError(null);
         const data = await fetchUserListings();
+        console.log("Listings loaded:", data); // Debug
         setListings(data);
       } catch (err) {
         setError(
@@ -48,7 +48,8 @@ export function ProductGrid({
     return listings.filter((listing) => {
       if (
         searchQuery &&
-        !listing.title.toLowerCase().includes(searchQuery.toLowerCase())
+        !listing.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        !listing.id.toLowerCase().includes(searchQuery.toLowerCase())
       ) {
         return false;
       }
@@ -75,7 +76,7 @@ export function ProductGrid({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {[...Array(8)].map((_, i) => (
-          <GlassCard key={i} className="h-64 animate-pulse">
+          <GlassCard key={i} className="h-80 animate-pulse">
             <div className="w-full h-full bg-gradient-to-br from-slate-800/30 to-slate-900/30 rounded-xl"></div>
           </GlassCard>
         ))}
@@ -93,10 +94,10 @@ export function ProductGrid({
 
   return (
     <div className="space-y-6">
-      {/* Search - Sin lupa, limpio */}
+      {/* Search */}
       <input
         type="text"
-        placeholder="Buscar publicaciones..."
+        placeholder="Buscar por título o código MLA..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         className="w-full px-4 py-3 bg-background/50 border border-white/10 rounded-lg text-foreground placeholder:text-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all"
@@ -124,7 +125,12 @@ export function ProductGrid({
                 transition={{ duration: 0.3 }}
                 layout
               >
-                <GlassCard className="overflow-hidden hover:border-glow transition-all duration-300 h-full">
+                <GlassCard
+                  className={`overflow-hidden hover:border-glow transition-all duration-300 h-full cursor-pointer ${
+                    analyzingId === listing.id ? "opacity-50" : ""
+                  }`}
+                  onClick={() => handleQuickAnalysis(listing.id)}
+                >
                   <div className="flex flex-col h-full">
                     {/* Image */}
                     <div className="relative w-full h-48 bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden">
@@ -135,22 +141,11 @@ export function ProductGrid({
                           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-foreground/30">
-                          <svg
-                            className="w-16 h-16"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={1.5}
-                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
+                        <div className="w-full h-full flex items-center justify-center">
+                          <div className="text-foreground/20 text-4xl">📦</div>
                         </div>
                       )}
+
                       {/* Status Badge */}
                       <div className="absolute top-3 right-3">
                         <span
@@ -163,10 +158,27 @@ export function ProductGrid({
                           {listing.status}
                         </span>
                       </div>
+
+                      {/* Analyzing Overlay */}
+                      {analyzingId === listing.id && (
+                        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+                          <div className="text-center">
+                            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                            <p className="text-white text-sm font-semibold">
+                              Analizando...
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Content */}
                     <div className="p-5 space-y-3 flex-1 flex flex-col">
+                      {/* Código MLA */}
+                      <div className="text-xs font-mono text-primary/80 font-semibold">
+                        {listing.id}
+                      </div>
+
                       {/* Title */}
                       <h3 className="font-semibold text-foreground line-clamp-2 min-h-[3rem] text-sm leading-snug">
                         {listing.title}
@@ -183,11 +195,12 @@ export function ProductGrid({
                           backgroundClip: "text",
                         }}
                       >
-                        ${listing.price?.toLocaleString() || "0"}
+                        {listing.currency_id} $
+                        {listing.price?.toLocaleString() || "0"}
                       </div>
 
                       {/* Stats */}
-                      <div className="flex gap-4 text-xs text-foreground/60">
+                      <div className="flex gap-4 text-xs text-foreground/60 mt-auto">
                         <div className="flex items-center gap-1.5">
                           <span>📦</span>
                           <span>{listing.available_quantity || 0} stock</span>
@@ -198,22 +211,9 @@ export function ProductGrid({
                         </div>
                       </div>
 
-                      {/* Action Button */}
-                      <div className="mt-auto pt-2">
-                        <NeonButton
-                          onClick={() => handleQuickAnalysis(listing.id)}
-                          disabled={analyzingId === listing.id}
-                          className="w-full py-2.5 text-sm"
-                        >
-                          {analyzingId === listing.id ? (
-                            <>
-                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin inline-block mr-2" />
-                              Analizando...
-                            </>
-                          ) : (
-                            "Analizar"
-                          )}
-                        </NeonButton>
+                      {/* Hint */}
+                      <div className="text-xs text-center text-foreground/40 pt-2 border-t border-white/5">
+                        Click para analizar
                       </div>
                     </div>
                   </div>
