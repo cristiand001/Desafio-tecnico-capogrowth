@@ -195,9 +195,10 @@ export function ProductGrid({
                           backgroundClip: "text",
                         }}
                       >
-                        // Dentro de ProductGrid.tsx
                         {listing.currency_id} ${" "}
-                        {Number(listing.price).toLocaleString("es-AR")}
+                        {listing.price > 0
+                          ? listing.price.toLocaleString("es-AR")
+                          : "---"}
                       </div>
 
                       {/* Stats */}

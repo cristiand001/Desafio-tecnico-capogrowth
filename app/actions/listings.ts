@@ -173,22 +173,15 @@ export async function fetchUserListings(): Promise<UserListing[]> {
     const token = cookieStore.get("ml_access_token")?.value;
     const userId = cookieStore.get("ml_user_id")?.value;
 
-    if (!token) {
-      throw new Error("Not authenticated with MercadoLibre");
-    }
+    if (!token || !userId) throw new Error("No autenticado");
 
-    if (!userId) {
-      throw new Error("User ID not found");
-    }
-
-    // 1. Get list of item IDs
     const searchResponse = await getUserListings(userId, token, 0, 50);
 
-    // 2. Fetch full details for each item (with price)
     const listingsWithDetails = await Promise.all(
       searchResponse.results.map(async (item) => {
-        // 1. Datos base: Lo que ya tenemos de la búsqueda inicial
-        const base = {
+        // --- 1. DATOS BASE (Lo que ya tenemos) ---
+        // Esto garantiza que NUNCA verás ARS $0 si la búsqueda inicial trajo datos.
+        const baseData = {
           id: item.id,
           title: item.title,
           price: item.price || 0,
@@ -203,27 +196,26 @@ export async function fetchUserListings(): Promise<UserListing[]> {
         };
 
         try {
-          // 2. Intentamos mejorar los datos con el detalle individual
+          // --- 2. INTENTO DE MEJORA ---
           const fullItem = await getItemDetails(item.id, token);
           return {
-            ...base,
-            price: fullItem.price, // Precio más actualizado
+            ...baseData,
+            price: fullItem.price, // Precio actualizado
             available_quantity: fullItem.available_quantity,
             sold_quantity: fullItem.sold_quantity,
           };
         } catch (error) {
-          // 3. Si falla el detalle, devolvemos los datos base (NO ceros)
-          console.warn(
-            `Error en detalle de ${item.id}, usando datos de búsqueda`
-          );
-          return base;
+          // --- 3. FALLBACK SEGURO ---
+          // Si falla el detalle individual, devolvemos los datos de baseData
+          console.warn(`Aviso: Usando datos de búsqueda para ${item.id}`);
+          return baseData;
         }
       })
     );
 
     return listingsWithDetails;
   } catch (error) {
-    console.error("Error general:", error);
+    console.error("Error en fetchUserListings:", error);
     throw error;
   }
 }
