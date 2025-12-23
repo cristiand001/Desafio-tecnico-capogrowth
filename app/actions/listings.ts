@@ -40,19 +40,10 @@ export async function analyzeListing(
   itemId: string
 ): Promise<AnalyzeListingResult> {
   try {
-    // 1. Get access token from cookies
     const cookieStore = await cookies();
     const token = cookieStore.get("ml_access_token")?.value;
+    if (!token) throw new Error("Not authenticated with MercadoLibre");
 
-    console.log("=== Analyzing Listing ===");
-    console.log("Item ID:", itemId);
-    console.log("Has token:", !!token);
-
-    if (!token) {
-      throw new Error("Not authenticated with MercadoLibre");
-    }
-
-    // 2. Fetch data from MercadoLibre API
     const itemData: MLItemResponse = await getItemDetails(itemId, token);
     const descData: MLDescriptionResponse = await getItemDescription(
       itemId,
@@ -76,10 +67,8 @@ export async function analyzeListing(
         descData.plain_text || descData.text || "Sin descripción disponible.",
     };
 
-    // 2. Guardado en Supabase (Con UPSERT corregido)
     const supabase = getSupabaseClient();
 
-    // Guardar publicación
     const { data: savedListing, error: listingError } = await supabase
       .from("listings")
       .upsert(
@@ -94,51 +83,35 @@ export async function analyzeListing(
           permalink: listing.permalink,
           updated_at: new Date().toISOString(),
         },
-        { onConflict: "item_id" } // Evita error de duplicado
+        { onConflict: "item_id" }
       )
       .select()
       .single();
 
     if (listingError)
-      throw new Error(`Error saving listing: ${listingError.message}`);
+      throw new Error(`Failed to save listing: ${listingError.message}`);
 
     const listingDbId = savedListing.id;
 
-    // Guardar descripción (Agregado onConflict)
-    const { error: descError } = await supabase
+    // IMPORTANTE: Agregamos onConflict aquí para que el botón no se trabe
+    await supabase
       .from("listing_descriptions")
       .upsert(
-        {
-          listing_id: listingDbId,
-          plain_text: description.plain_text,
-        },
-        { onConflict: "listing_id" } // Clave para que el botón no se trabe
+        { listing_id: listingDbId, plain_text: description.plain_text },
+        { onConflict: "listing_id" }
       );
 
-    if (descError)
-      throw new Error(`Error saving description: ${descError.message}`);
-
-    // 3. IA y Recomendaciones
     const recommendations = await analyzePublication(listing, description);
 
-    // 4. Guardar Análisis (CAMBIADO de insert a UPSERT)
-    // Esto es lo que hacía que el botón no respondiera al segundo clic
-    const { error: analysisError } = await supabase.from("ai_analyses").upsert(
-      {
-        listing_id: listingDbId,
-        recommendations: recommendations,
-      },
-      { onConflict: "listing_id" }
-    );
+    // IMPORTANTE: Cambiamos a upsert aquí también
+    await supabase
+      .from("ai_analyses")
+      .upsert(
+        { listing_id: listingDbId, recommendations: recommendations },
+        { onConflict: "listing_id" }
+      );
 
-    if (analysisError)
-      throw new Error(`Error saving analysis: ${analysisError.message}`);
-
-    return {
-      listing,
-      description,
-      analysis: recommendations,
-    };
+    return { listing, description, analysis: recommendations };
   } catch (error: any) {
     console.error("Error in analyzeListing:", error);
     throw new Error(`Listing analysis failed: ${error.message}`);
@@ -157,6 +130,7 @@ export async function fetchUserListings(): Promise<UserListing[]> {
 
     const listingsWithDetails = await Promise.all(
       searchResponse.results.map(async (item) => {
+        // DATOS BASE: Si falla el detalle, esto salva el precio
         const baseData = {
           id: item.id,
           title: item.title,
@@ -172,7 +146,6 @@ export async function fetchUserListings(): Promise<UserListing[]> {
         };
 
         try {
-          // --- 2. INTENTO DE MEJORA ---
           const fullItem = await getItemDetails(item.id, token);
           return {
             ...baseData,
@@ -182,8 +155,7 @@ export async function fetchUserListings(): Promise<UserListing[]> {
             sold_quantity: fullItem.sold_quantity ?? baseData.sold_quantity,
           };
         } catch (error) {
-          console.warn(`Aviso: Usando datos de búsqueda para ${item.id}`);
-          return baseData;
+          return baseData; // Si falla el detalle individual, devolvemos la base
         }
       })
     );
@@ -191,6 +163,6 @@ export async function fetchUserListings(): Promise<UserListing[]> {
     return listingsWithDetails;
   } catch (error) {
     console.error("Error en fetchUserListings:", error);
-    throw error;
+    return []; // No tiramos error para que no se rompa la pantalla
   }
 }
