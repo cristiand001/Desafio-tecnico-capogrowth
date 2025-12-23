@@ -80,8 +80,9 @@ export async function analyzeListing(
     };
 
     const description: ListingDescription = {
-      listing_id: itemId, // Will be updated with actual DB ID
-      plain_text: descData.plain_text || descData.text || "",
+      listing_id: itemId,
+      plain_text:
+        descData.plain_text || descData.text || "Sin descripción disponible.",
     };
 
     // 4. Save to Supabase
@@ -119,7 +120,7 @@ export async function analyzeListing(
     console.log(`Saving description to database...`);
     const { error: descError } = await supabase
       .from("listing_descriptions")
-      .insert({
+      .upsert({
         listing_id: listingDbId,
         plain_text: description.plain_text,
       });

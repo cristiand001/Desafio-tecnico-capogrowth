@@ -152,14 +152,20 @@ export async function getItemDescription(
         },
       }
     );
-
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      // Si no existe la descripción (404), devolvemos un objeto vacío en lugar de romper todo
+      if (error.response?.status === 404) {
+        return {
+          text: "",
+          plain_text: "", // Esto permite que el flujo continúe
+          last_updated: new Date().toISOString(),
+          date_created: new Date().toISOString(),
+        };
+      }
       throw new Error(
-        `Failed to fetch description for item ${itemId}: ${
-          error.response?.data?.message || error.message
-        }`
+        `Error en API ML: ${error.response?.data?.message || error.message}`
       );
     }
     throw error;
