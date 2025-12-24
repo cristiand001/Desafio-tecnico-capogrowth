@@ -197,21 +197,26 @@ function PageContent() {
           </h2>
           <ProductGrid
             onAnalysisStart={async (id) => {
-              setItemId(id); // Seteamos el ID para que se vea en el input
+              if (!id) return;
+
+              setItemId(id);
               setError("");
               setLoading(true);
               setResult(null);
+
               try {
-                const data = await analyzeListing(id);
-                setResult(data);
                 window.scrollTo({ top: 0, behavior: "smooth" });
+
+                const analysisResult = await analyzeListing(id);
+                setResult(analysisResult);
               } catch (err: any) {
-                setError(err.message || "Error al analizar");
+                console.error("Análisis fallido:", err);
+                setError(err.message || "No se pudo analizar el producto");
               } finally {
                 setLoading(false);
               }
             }}
-            onAnalysisComplete={(id) => console.log("Completado", id)}
+            onAnalysisComplete={(id) => console.log("Análisis terminado", id)}
           />
         </div>
 

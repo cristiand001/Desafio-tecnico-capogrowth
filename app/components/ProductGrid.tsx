@@ -58,17 +58,16 @@ export function ProductGrid({
   }, [listings, searchQuery]);
 
   const handleQuickAnalysis = async (itemId: string) => {
-    if (analyzingId) return;
+    if (analyzingId || !itemId) return;
+
     try {
       setAnalyzingId(itemId);
-      onAnalysisStart?.(itemId);
-
-      const result = await analyzeListing(itemId);
-
-      // 3. Notificamos que terminó
-      onAnalysisComplete?.(itemId);
+      // Solo notificamos que empezó. El fetch real lo hará la página principal.
+      if (onAnalysisStart) {
+        onAnalysisStart(itemId);
+      }
     } catch (err) {
-      console.error("Analysis failed:", err);
+      console.error("Error al iniciar análisis:", err);
     } finally {
       setAnalyzingId(null);
     }

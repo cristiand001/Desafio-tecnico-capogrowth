@@ -8,7 +8,7 @@ interface GlassCardProps {
   className?: string;
   glow?: boolean;
   delay?: number;
-  onClick?: () => void;
+  onClick?: () => void; // Asegúrate de que esté aquí
 }
 
 export const GlassCard = ({
@@ -16,7 +16,7 @@ export const GlassCard = ({
   className = "",
   glow = false,
   delay = 0,
-  onClick, // Agregamos esto aquí
+  onClick,
 }: GlassCardProps) => {
   return (
     <motion.div
@@ -27,7 +27,7 @@ export const GlassCard = ({
       className={`glass-strong rounded-2xl p-6 ${
         glow ? "border-glow" : ""
       } ${className} ${
-        onClick ? "cursor-pointer active:scale-95 transition-transform" : ""
+        onClick ? "cursor-pointer active:scale-95 transition-all" : ""
       }`}
     >
       {children}
