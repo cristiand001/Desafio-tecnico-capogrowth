@@ -134,7 +134,7 @@ export function ProductGrid({
                 >
                   <div className="flex flex-col h-full">
                     {/* Image */}
-                    <div className="relative w-full h-29 bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden">
+                    <div className="relative w-full h-28 bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden">
                       {listing.thumbnail ? (
                         <img
                           src={listing.thumbnail}
