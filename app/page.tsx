@@ -196,13 +196,22 @@ function PageContent() {
             Mis Publicaciones
           </h2>
           <ProductGrid
-            onAnalysisStart={(itemId) => {
-              setItemId(itemId);
+            onAnalysisStart={async (id) => {
+              setItemId(id); // Seteamos el ID para que se vea en el input
+              setError("");
               setLoading(true);
               setResult(null);
-              setError("");
+              try {
+                const data = await analyzeListing(id);
+                setResult(data);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              } catch (err: any) {
+                setError(err.message || "Error al analizar");
+              } finally {
+                setLoading(false);
+              }
             }}
-            onAnalysisComplete={(itemId) => {}}
+            onAnalysisComplete={(id) => console.log("Completado", id)}
           />
         </div>
 

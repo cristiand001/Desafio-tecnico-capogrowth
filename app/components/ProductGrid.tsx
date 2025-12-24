@@ -59,11 +59,13 @@ export function ProductGrid({
 
   const handleQuickAnalysis = async (itemId: string) => {
     if (analyzingId) return;
-
     try {
       setAnalyzingId(itemId);
       onAnalysisStart?.(itemId);
-      await analyzeListing(itemId);
+
+      const result = await analyzeListing(itemId);
+
+      // 3. Notificamos que terminó
       onAnalysisComplete?.(itemId);
     } catch (err) {
       console.error("Analysis failed:", err);
