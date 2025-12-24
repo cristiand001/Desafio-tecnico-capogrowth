@@ -142,7 +142,7 @@ export function ProductGrid({
                         <img
                           src={listing.thumbnail}
                           alt={listing.title}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                          className="w-full h-100px object-cover hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
