@@ -136,7 +136,7 @@ export function ProductGrid({
                     {/* Image */}
                     <div
                       className="relative w-full bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden"
-                      style={{ height: "120px" }}
+                      style={{ height: "160px" }}
                     >
                       {listing.thumbnail ? (
                         <img
