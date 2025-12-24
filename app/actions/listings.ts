@@ -39,7 +39,6 @@ interface AnalyzeListingResult {
 export async function analyzeListing(
   itemId: string
 ): Promise<AnalyzeListingResult> {
-  console.log("== SERVIDOR RECIBIÓ ID:", itemId); // Esto saldrá en tu terminal de VS Code
   if (!itemId || itemId === "undefined") {
     throw new Error("El ID del item llegó vacío al servidor");
   }
@@ -131,22 +130,43 @@ export async function fetchUserListings(): Promise<UserListing[]> {
 
     if (!token || !userId) throw new Error("Sesión expirada");
 
-    const searchResponse = await getUserListings(userId, token, 0, 50);
+    // 1. Obtenemos los IDs de las publicaciones
+    const searchResponse = await getUserListings(userId, token, 0, 20);
 
-    // Usamos los datos que ya trae el searchResponse para que la lista cargue rápido y con PRECIO.
-    return searchResponse.results.map((item: any) => ({
-      id: item.id,
-      title: item.title,
-      price: Number(item.price || 0), // Asegura que no sea 0 si la API lo manda
-      currency_id: item.currency_id || "ARS",
-      status: item.status,
-      available_quantity: Number(item.available_quantity || 0),
-      sold_quantity: Number(item.sold_quantity || 0),
-      category_id: item.category_id,
-      permalink: item.permalink,
-      thumbnail: item.thumbnail,
-      condition: item.condition,
-    }));
+    // Si no hay resultados, devolvemos array vacío
+    if (!searchResponse.results || searchResponse.results.length === 0)
+      return [];
+
+    // 2. IMPORTANTE: Consultamos los detalles completos de esos IDs
+    // Mercado Libre requiere un "multiget" para traer precios, fotos y stock reales
+    const ids = searchResponse.results.join(",");
+    const detailsResponse = await fetch(
+      `https://api.mercadolibre.com/items?ids=${ids}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    const detailsData = await detailsResponse.json();
+
+    // 3. Mapeamos la respuesta del multiget (que viene como un array de objetos con 'code' y 'body')
+    return detailsData.map((res: any) => {
+      const item = res.body; // El contenido real está en 'body'
+      return {
+        id: item.id,
+        title: item.title,
+        price: Number(item.price || 0),
+        currency_id: item.currency_id || "ARS",
+        status: item.status,
+        available_quantity: Number(item.available_quantity || 0),
+        sold_quantity: Number(item.sold_quantity || 0),
+        category_id: item.category_id,
+        permalink: item.permalink,
+        thumbnail:
+          item.thumbnail?.replace("-I.jpg", "-V.jpg") || item.thumbnail, // Mejora la calidad de imagen
+        condition: item.condition,
+      };
+    });
   } catch (error) {
     console.error("Error en fetchUserListings:", error);
     return [];

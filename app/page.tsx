@@ -67,32 +67,26 @@ function PageContent() {
     }
   };
 
-  const handleAnalyze = async () => {
-    if (!itemId.trim()) {
-      setError("Please enter a valid Item ID");
-      return;
-    }
+  const handleAnalyze = async (manualId?: string) => {
+    const targetId = manualId || itemId;
 
-    // Validar formato MLA
-    if (!itemId.match(/^MLA\d+$/i)) {
-      setError(
-        "El código debe tener formato MLA seguido de números (ej: MLA123456789)"
-      );
-      return;
-    }
+    // Si no hay ID, cortamos antes del crash
+    if (!targetId || typeof targetId !== "string") return;
+
+    const cleanId = targetId.trim();
+    if (!cleanId) return;
 
     setError("");
     setLoading(true);
     setResult(null);
 
     try {
-      console.log("Analyzing item:", itemId.trim());
-      const analysisResult = await analyzeListing(itemId.trim());
-      console.log("Analysis result:", analysisResult);
+      // Llamamos a la acción con el ID limpio
+      const analysisResult = await analyzeListing(cleanId);
       setResult(analysisResult);
-    } catch (err) {
-      console.error("Analysis error:", err);
-      setError(err instanceof Error ? err.message : "Analysis failed");
+      if (manualId) setItemId(cleanId); // Actualiza el input si vino de la grilla
+    } catch (err: any) {
+      setError(err.message || "Error al analizar");
     } finally {
       setLoading(false);
     }
