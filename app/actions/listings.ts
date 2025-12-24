@@ -39,6 +39,10 @@ interface AnalyzeListingResult {
 export async function analyzeListing(
   itemId: string
 ): Promise<AnalyzeListingResult> {
+  console.log("== SERVIDOR RECIBIÓ ID:", itemId); // Esto saldrá en tu terminal de VS Code
+  if (!itemId || itemId === "undefined") {
+    throw new Error("El ID del item llegó vacío al servidor");
+  }
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("ml_access_token")?.value;
@@ -129,7 +133,6 @@ export async function fetchUserListings(): Promise<UserListing[]> {
 
     const searchResponse = await getUserListings(userId, token, 0, 50);
 
-    // LA CLAVE: No pedimos getItemDetails para 50 items a la vez.
     // Usamos los datos que ya trae el searchResponse para que la lista cargue rápido y con PRECIO.
     return searchResponse.results.map((item: any) => ({
       id: item.id,
