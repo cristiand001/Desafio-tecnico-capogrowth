@@ -136,7 +136,7 @@ export function ProductGrid({
                     {/* Image */}
                     <div
                       className="relative w-full bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden"
-                      style={{ height: "112px" }}
+                      style={{ height: "120px" }}
                     >
                       {listing.thumbnail ? (
                         <img
@@ -151,9 +151,9 @@ export function ProductGrid({
                       )}
 
                       {/* Status Badge */}
-                      <div className="absolute top-3 right-3">
+                      <div className="absolute top-2 right-2">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${
+                          className={`px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${
                             listing.status === "active"
                               ? "bg-green-500/90 text-white"
                               : "bg-slate-500/90 text-white"
@@ -167,8 +167,8 @@ export function ProductGrid({
                       {analyzingId === listing.id && (
                         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
                           <div className="text-center">
-                            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-                            <p className="text-white text-sm font-semibold">
+                            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                            <p className="text-white text-xs font-semibold">
                               Analizando...
                             </p>
                           </div>
