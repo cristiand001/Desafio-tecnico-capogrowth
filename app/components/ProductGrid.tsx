@@ -136,13 +136,13 @@ export function ProductGrid({
                     {/* Image */}
                     <div
                       className="relative w-full bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden"
-                      style={{ height: "160px" }}
+                      style={{ height: "300px" }}
                     >
                       {listing.thumbnail ? (
                         <img
                           src={listing.thumbnail}
                           alt={listing.title}
-                          className="w-full h-100px object-cover hover:scale-105 transition-transform duration-300"
+                          className="w-30px h-30px object-cover hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
